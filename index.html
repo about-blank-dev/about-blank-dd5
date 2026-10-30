@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#000000">
+  <title>Lancement | about:blank</title>
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #000000;
+      --panel: #121212;
+      --panel-raised: #1a1a1a;
+      --border: #333333;
+      --text: #e6eef6;
+      --muted: #9aa4b2;
+      --accent: #ffffff;
+      --success: #4caf50;
+    }
+
+    * { box-sizing: border-box; }
+    [hidden] { display: none !important; }
+
+    body {
+      min-height: 100vh;
+      margin: 0;
+      padding: 32px 20px 100px;
+      display: grid;
+      place-items: center;
+      color: var(--text);
+      background-color: var(--bg);
+      background-image: linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+      background-size: 40px 40px;
+      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    .launcher { width: min(100%, 680px); }
+
+    .topline {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: 24px;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .brand { display: inline-flex; align-items: center; gap: 9px; color: var(--text); font-weight: 650; }
+    .brand-mark { width: 9px; height: 9px; border: 2px solid var(--text); border-radius: 50%; }
+    .secure { display: inline-flex; align-items: center; gap: 7px; }
+    .secure::before { content: ""; width: 7px; height: 7px; border-radius: 50%; background: var(--success); }
+
+    header { margin: 0 0 27px; }
+    .eyebrow { margin: 0 0 10px; color: var(--muted); font-size: 11px; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+    h1 { margin: 0; font-size: 38px; line-height: 1.08; font-weight: 650; }
+    .intro { max-width: 520px; margin: 13px 0 0; color: var(--muted); font-size: 15px; line-height: 1.6; }
+
+    .step-progress { display: flex; align-items: center; gap: 13px; margin: 0 0 14px; color: var(--muted); font-size: 10px; font-weight: 700; }
+    .progress-track { height: 2px; flex: 1; overflow: hidden; background: var(--border); }
+    .progress-value { display: block; width: 33.333%; height: 100%; background: var(--text); transition: width .25s ease; }
+    .steps { display: grid; gap: 10px; }
+    .step {
+      display: grid;
+      grid-template-columns: 42px minmax(0, 1fr) auto;
+      align-items: start;
+      gap: 15px;
+      padding: 20px;
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,.2);
+      animation: arrive .45s both;
+    }
+    .step:nth-child(2) { animation-delay: .08s; }
+    .step:nth-child(3) { animation-delay: .16s; }
+    .step-number {
+      width: 36px;
+      height: 36px;
+      display: grid;
+      place-items: center;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      background: var(--panel-raised);
+      color: var(--text);
+      font-size: 13px;
+      font-weight: 700;
+    }
+    .step-copy { min-width: 0; }
+    h2 { margin: 1px 0 6px; font-size: 15px; line-height: 1.35; }
+    .step-copy p { margin: 0; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .auth-form { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 8px; margin-top: 12px; }
+    .auth-form input {
+      min-width: 0;
+      width: 100%;
+      height: 38px;
+      padding: 0 10px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      outline: none;
+      background: #080808;
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+    }
+    .auth-form input:focus { border-color: #888; }
+    .auth-form .action { grid-column: 1 / -1; justify-self: start; }
+    .auth-switch { grid-column: 1 / -1; justify-self: start; padding: 2px 0; border: 0; background: transparent; color: var(--muted); font: inherit; font-size: 12px; text-decoration: underline; cursor: pointer; }
+    .auth-switch:hover { color: var(--text); }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+
+    .action {
+      min-height: 38px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      padding: 0 13px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      background: var(--panel-raised);
+      color: var(--text);
+      font: inherit;
+      font-size: 12px;
+      font-weight: 650;
+      text-decoration: none;
+      white-space: nowrap;
+      transition: background .18s, border-color .18s, transform .18s;
+      cursor: pointer;
+    }
+    .action:hover { background: #242424; border-color: #666; transform: translateY(-1px); }
+    .action.primary { background: var(--accent); border-color: var(--accent); color: #000; }
+    .action.primary:hover { background: #d8dfe6; }
+    .action:disabled { cursor: wait; opacity: .65; transform: none; }
+    .action svg { width: 14px; height: 14px; flex: none; }
+    .push-status { grid-column: 2 / -1; margin: -3px 0 0; color: var(--muted); font-size: 12px; line-height: 1.5; }
+    .push-status:empty { display: none; }
+    .step-navigation {
+      position: fixed;
+      right: max(20px, calc((100vw - 680px) / 2));
+      bottom: 20px;
+      z-index: 20;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 8px;
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      background: rgba(18,18,18,.96);
+      box-shadow: 0 8px 28px rgba(0,0,0,.45);
+    }
+    .step-navigation .action { min-width: 40px; }
+    .step-navigation .back-action { padding: 0 12px; }
+    .step-navigation .back-action svg { transform: rotate(180deg); }
+    .completed-view { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; }
+    .completed-panel { padding: 20px; background: var(--panel); border: 1px solid var(--border); border-radius: 12px; box-shadow: 0 4px 20px rgba(0,0,0,.2); }
+    .completed-panel h2 { font-size: 16px; }
+    .completed-panel > p { margin: 0 0 14px; color: var(--muted); font-size: 13px; line-height: 1.55; }
+    .completed-panel > p a { color: var(--text); }
+    .preference-list { display: grid; gap: 8px; margin-top: 16px; }
+    .preference-row { display: flex; align-items: center; gap: 10px; min-height: 42px; padding: 0 11px; border: 1px solid var(--border); border-radius: 8px; background: var(--panel-raised); font-size: 13px; cursor: pointer; }
+    .preference-row input { width: 16px; height: 16px; margin: 0; accent-color: var(--text); }
+    .manage-status { min-height: 18px; margin: 12px 0 0 !important; color: var(--muted); font-size: 12px !important; }
+    .completed-panel .action { margin-top: 4px; }
+
+    .keys { display: inline-flex; align-items: center; gap: 5px; margin-top: 12px; }
+    kbd { min-width: 28px; padding: 4px 7px; border: 1px solid var(--border); border-radius: 5px; background: #080808; color: var(--text); font: 600 11px/1.2 Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; text-align: center; }
+    .or { color: var(--muted); font-size: 11px; }
+
+    .note { margin: 15px 2px 0; color: var(--muted); font-size: 11px; line-height: 1.55; }
+    footer { display: flex; justify-content: space-between; gap: 14px; margin-top: 26px; color: #777f89; font-size: 11px; }
+    footer a { color: inherit; text-decoration: none; }
+    footer a:hover { color: var(--text); }
+
+    @keyframes arrive { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+    @media (max-width: 560px) {
+      body { padding: 24px 15px; }
+      .topline { margin-bottom: 21px; }
+      .step { grid-template-columns: 36px minmax(0, 1fr); gap: 12px; padding: 16px; }
+      .step-number { width: 34px; height: 34px; }
+      .step .action { grid-column: 2; justify-self: start; margin-top: 2px; }
+      .push-status { grid-column: 2; }
+      .auth-status { grid-column: 2; }
+      .auth-form .action { grid-column: 1 / -1; }
+      .step-navigation { right: 14px; bottom: 14px; }
+      .completed-view { grid-template-columns: 1fr; }
+      footer { flex-direction: column; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <main class="launcher">
+    <div class="topline">
+      <span class="brand"><span class="brand-mark" aria-hidden="true"></span>about:blank</span>
+      <span class="secure">Page sécurisée</span>
+    </div>
+
+    <header>
+      <p class="eyebrow">Mise en route</p>
+      <h1 id="page-title">About - Blank, prêt à ouvrir.</h1>
+      <p class="intro" id="page-intro">Connectez-vous, téléchargez about.html, ajoutez-le aux favoris, puis activez les notifications.</p>
+    </header>
+
+    <div class="step-progress" aria-live="polite">
+      <span id="step-count">ÉTAPE 01 / 04</span>
+      <span class="progress-track" aria-hidden="true"><span class="progress-value" id="progress-value"></span></span>
+    </div>
+
+    <section class="steps" aria-label="Étapes de lancement">
+      <article class="step" data-step="0">
+        <span class="step-number" aria-hidden="true">01</span>
+        <div class="step-copy">
+          <h2>Se connecter ou créer un compte</h2>
+          <p>Connectez-vous à votre compte ou créez-en un. Les notifications ne seront pas activées à cette étape.</p>
+          <form class="auth-form" id="login-form">
+            <label class="sr-only" for="login-username">Nom d’utilisateur</label>
+            <input id="login-username" type="text" autocomplete="nickname" placeholder="Nom d’utilisateur" hidden>
+            <label class="sr-only" for="login-email">Adresse e-mail</label>
+            <input id="login-email" type="email" autocomplete="username" placeholder="Adresse e-mail" required>
+            <label class="sr-only" for="login-password">Mot de passe</label>
+            <input id="login-password" type="password" autocomplete="current-password" placeholder="Mot de passe" required>
+            <button class="action" id="login-button" type="submit">Se connecter</button>
+            <button class="auth-switch" id="auth-mode-toggle" type="button">Créer un compte</button>
+          </form>
+        </div>
+        <p class="auth-status push-status" id="auth-status" role="status" aria-live="polite"></p>
+      </article>
+
+      <article class="step" data-step="1" hidden>
+        <span class="step-number" aria-hidden="true">02</span>
+        <div class="step-copy">
+            <h2>Télécharger le fichier</h2>
+            <p>Enregistrez about.html sur votre appareil. À l’ouverture, il rejoint la version web et retrouve la session de ce navigateur.</p>
+        </div>
+        <a class="action primary" id="download-about" href="about.html" download="about.html">
+          Télécharger
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>
+        </a>
+      </article>
+
+      <article class="step" data-step="2" hidden>
+        <span class="step-number" aria-hidden="true">03</span>
+        <div class="step-copy">
+          <h2>Mettre le fichier en favori</h2>
+          <p>Ouvrez le fichier téléchargé, puis ajoutez la page about:blank qui s’ouvre aux favoris.</p>
+          <div class="keys" aria-label="Raccourci clavier pour ajouter aux favoris">
+            <kbd>Ctrl</kbd><span class="or">+</span><kbd>D</kbd>
+            <span class="or">ou</span>
+            <kbd>⌘</kbd><span class="or">+</span><kbd>D</kbd>
+          </div>
+          <button class="action" id="confirm-bookmark" type="button">J’ai ajouté le favori</button>
+        </div>
+      </article>
+
+      <article class="step" data-step="3" hidden>
+        <span class="step-number" aria-hidden="true">04</span>
+        <div class="step-copy">
+          <h2>Activer les notifications</h2>
+          <p>Activez les notifications pour ce navigateur et associez-les à votre compte.</p>
+        </div>
+        <button class="action primary" id="enable-notifications" type="button">
+          Activer les notifications
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9M10 21h4"/></svg>
+        </button>
+        <p class="push-status" id="push-status" role="status" aria-live="polite"></p>
+      </article>
+    </section>
+
+    <section class="completed-view" id="completed-view" aria-label="Gestion de about:blank" hidden>
+      <article class="completed-panel">
+        <h2>Notifications</h2>
+        <p id="managed-notification-status">État des notifications en cours de vérification…</p>
+        <button class="action primary" id="manage-notifications" type="button">Désactiver les notifications</button>
+        <button class="action" id="test-notification" type="button">Afficher une notification de test</button>
+        <p class="manage-status" id="test-notification-status" role="status" aria-live="polite"></p>
+        <div class="preference-list" aria-label="Types de notifications">
+          <label class="preference-row"><input id="pref-global" type="checkbox"><span>Chat global</span></label>
+          <label class="preference-row"><input id="pref-conv" type="checkbox"><span>Conversations privées</span></label>
+        </div>
+        <p class="manage-status" id="prefs-status" role="status" aria-live="polite"></p>
+      </article>
+      <article class="completed-panel">
+        <h2>Fichier about.html</h2>
+        <p>Téléchargez à nouveau la page about:blank sur cet appareil.</p>
+        <a class="action primary" href="about.html" download="about.html">Retélécharger about.html</a>
+        <p class="manage-status">Le fichier local ouvre la <a href="about.html">version web</a> pour retrouver la session sans copier de jeton.</p>
+      </article>
+    </section>
+
+    <nav class="step-navigation" aria-label="Navigation des étapes">
+      <button class="action back-action" id="step-back" type="button" aria-label="Étape précédente" hidden>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </button>
+      <button class="action primary" id="step-next" type="button">Passer</button>
+    </nav>
+
+    <p class="note" id="setup-note">Les notifications nécessitent l’autorisation du navigateur et une connexion à votre compte. Si elles sont bloquées, autorisez-les dans les paramètres du site.</p>
+    <footer id="site-footer">
+      <span>about:blank · Lanceur</span>
+      <a href="about.html">Accéder à la page en ligne</a>
+    </footer>
+  </main>
+  <script>
+    (() => {
+      const workerUrl = 'https://about-blank-chat.elix-hardy9.workers.dev';
+      const vapidPublicKey = 'BNbPMoCwKI6JpXHCYov4BzrVM04sXPP82WHtd6sofV5JDnjrr9_T9OI7DFUVZYo1Kx9tLwkUtvOtS_mfeiZ6hCU';
+      const button = document.getElementById('enable-notifications');
+      const loginForm = document.getElementById('login-form');
+      const loginButton = document.getElementById('login-button');
+      const authModeToggle = document.getElementById('auth-mode-toggle');
+      const usernameInput = document.getElementById('login-username');
+      const authStatus = document.getElementById('auth-status');
+      const status = document.getElementById('push-status');
+      const stepContainer = document.querySelector('.steps');
+      const steps = [...document.querySelectorAll('.step[data-step]')];
+      const stepCount = document.getElementById('step-count');
+      const progressValue = document.getElementById('progress-value');
+      const backButton = document.getElementById('step-back');
+      const nextButton = document.getElementById('step-next');
+      const downloadLink = document.getElementById('download-about');
+      const bookmarkButton = document.getElementById('confirm-bookmark');
+      const completedView = document.getElementById('completed-view');
+      const pageTitle = document.getElementById('page-title');
+      const pageIntro = document.getElementById('page-intro');
+      const stepProgress = document.querySelector('.step-progress');
+      const setupNote = document.getElementById('setup-note');
+      const siteFooter = document.getElementById('site-footer');
+      const managedNotificationStatus = document.getElementById('managed-notification-status');
+      const manageNotificationsButton = document.getElementById('manage-notifications');
+      const testNotificationButton = document.getElementById('test-notification');
+      const testNotificationStatus = document.getElementById('test-notification-status');
+      const globalPreference = document.getElementById('pref-global');
+      const conversationPreference = document.getElementById('pref-conv');
+      const preferencesStatus = document.getElementById('prefs-status');
+      let currentStep = 0;
+      let accountStepDone = Boolean(localStorage.getItem('cf_jwt'));
+      let notificationStepDone = false;
+      let downloadStepDone = localStorage.getItem('launch_about_download_started') === 'true';
+      let bookmarkStepDone = localStorage.getItem('launch_about_bookmarked') === 'true';
+      let dashboardVisible = false;
+      let registerMode = false;
+
+      function updateNextButton() {
+        const completed = [accountStepDone, downloadStepDone, bookmarkStepDone, notificationStepDone][currentStep];
+        if (currentStep === steps.length - 1 && completed) {
+          nextButton.textContent = 'Terminer';
+          return;
+        }
+        nextButton.textContent = completed ? 'Étape suivante' : 'Passer';
+      }
+
+      function allStepsDone() {
+        return accountStepDone && downloadStepDone && bookmarkStepDone && notificationStepDone;
+      }
+
+      function showCompletedView(force = false) {
+        if (dashboardVisible || (!force && !allStepsDone())) return;
+        dashboardVisible = true;
+        localStorage.setItem('launch_setup_completed_v2', 'true');
+        stepProgress.hidden = true;
+        stepContainer.hidden = true;
+        completedView.hidden = false;
+        document.querySelector('.step-navigation').hidden = true;
+        setupNote.hidden = true;
+        siteFooter.hidden = true;
+        pageTitle.textContent = 'Tout est prêt.';
+        pageIntro.textContent = 'Gérez vos notifications et votre fichier about.html depuis cette page.';
+        loadNotificationPreferences();
+        refreshManagedNotificationStatus();
+      }
+
+      async function refreshNotificationStep() {
+        if (!('Notification' in window) || Notification.permission !== 'granted' || !('serviceWorker' in navigator)) return;
+        try {
+          const registration = await navigator.serviceWorker.getRegistration(new URL('sw.js', location.href));
+          const subscription = registration && await registration.pushManager.getSubscription();
+          notificationStepDone = Boolean(subscription && usesCurrentVapidKey(subscription));
+          if (currentStep === 3) updateNextButton();
+          showCompletedView();
+        } catch (error) {
+          notificationStepDone = false;
+        }
+      }
+
+      function showStep(index) {
+        currentStep = index;
+        steps.forEach((step, stepIndex) => {
+          step.hidden = stepIndex !== index;
+          step.setAttribute('aria-hidden', String(stepIndex !== index));
+        });
+        stepCount.textContent = `ÉTAPE ${String(index + 1).padStart(2, '0')} / 04`;
+        progressValue.style.width = `${((index + 1) / steps.length) * 100}%`;
+        backButton.hidden = index === 0;
+        updateNextButton();
+        nextButton.disabled = false;
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      nextButton.addEventListener('click', () => {
+        if (currentStep < steps.length - 1) {
+          showStep(currentStep + 1);
+          return;
+        }
+        if (allStepsDone()) showCompletedView();
+        else status.textContent = 'Active les notifications pour terminer la mise en route.';
+      });
+
+      backButton.addEventListener('click', () => showStep(Math.max(0, currentStep - 1)));
+
+      downloadLink.addEventListener('click', () => {
+        downloadStepDone = true;
+        localStorage.setItem('launch_about_download_started', 'true');
+        if (currentStep === 1) updateNextButton();
+        showCompletedView();
+      });
+
+      bookmarkButton.addEventListener('click', () => {
+        bookmarkStepDone = true;
+        localStorage.setItem('launch_about_bookmarked', 'true');
+        bookmarkButton.textContent = 'Favori confirmé';
+        bookmarkButton.disabled = true;
+        if (currentStep === 2) updateNextButton();
+        showCompletedView();
+      });
+
+      function refreshLoginState() {
+        const connected = Boolean(localStorage.getItem('cf_jwt'));
+        loginForm.hidden = connected;
+        accountStepDone = connected;
+        authStatus.textContent = connected ? 'Compte connecté sur cet appareil.' : '';
+        updateNextButton();
+      }
+
+      authModeToggle.addEventListener('click', () => {
+        registerMode = !registerMode;
+        usernameInput.hidden = !registerMode;
+        usernameInput.required = registerMode;
+        usernameInput.autocomplete = registerMode ? 'nickname' : 'off';
+        document.getElementById('login-password').autocomplete = registerMode ? 'new-password' : 'current-password';
+        loginButton.textContent = registerMode ? 'Créer mon compte' : 'Se connecter';
+        authModeToggle.textContent = registerMode ? 'J’ai déjà un compte' : 'Créer un compte';
+        authStatus.textContent = '';
+      });
+
+      loginForm.addEventListener('submit', async event => {
+        event.preventDefault();
+        loginButton.disabled = true;
+        authStatus.textContent = registerMode ? 'Création du compte…' : 'Connexion en cours…';
+        try {
+          const email = document.getElementById('login-email').value.trim().toLowerCase();
+          const password = document.getElementById('login-password').value.trim();
+          const username = usernameInput.value.trim() || email.split('@')[0];
+          const response = await fetch(`${workerUrl}${registerMode ? '/api/register' : '/api/login'}`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(registerMode ? { email, password, username } : { email, password })
+          });
+          const result = await response.json().catch(() => ({}));
+          if (!response.ok) {
+            const errors = {
+              INVALID_CREDENTIALS: 'Adresse e-mail ou mot de passe incorrect.',
+              INVALID_EMAIL: 'Adresse e-mail invalide.',
+              EMAIL_EXISTS: 'Cette adresse e-mail est déjà utilisée.',
+              WEAK_PASSWORD: 'Le mot de passe doit contenir au moins 6 caractères.'
+            };
+            throw new Error(errors[result.code] || result.error || (registerMode ? 'Création du compte impossible.' : 'Connexion impossible.'));
+          }
+          if (!result.token) throw new Error('Le serveur n’a pas renvoyé de session valide.');
+          localStorage.setItem('cf_jwt', result.token);
+          if (result.user) localStorage.setItem('msg_current_user', JSON.stringify(result.user));
+          refreshLoginState();
+          authStatus.textContent = registerMode ? 'Compte créé. Tu peux passer à l’étape suivante.' : 'Connexion réussie. Tu peux passer à l’étape suivante.';
+        } catch (error) {
+          authStatus.textContent = error.message;
+        } finally {
+          loginButton.disabled = false;
+        }
+      });
+
+      function decodeVapidKey(value) {
+        const base64 = value.replace(/-/g, '+').replace(/_/g, '/');
+        const padded = base64.padEnd(Math.ceil(base64.length / 4) * 4, '=');
+        return Uint8Array.from(atob(padded), character => character.charCodeAt(0));
+      }
+
+      function usesCurrentVapidKey(subscription) {
+        const currentKey = subscription.options && subscription.options.applicationServerKey;
+        if (!currentKey) return true;
+        const actual = new Uint8Array(currentKey);
+        const expected = decodeVapidKey(vapidPublicKey);
+        return actual.length === expected.length && actual.every((byte, index) => byte === expected[index]);
+      }
+
+      async function pushApi(path, options = {}) {
+        const token = localStorage.getItem('cf_jwt');
+        if (!token) throw new Error('Session expirée. Reconnecte-toi depuis le lanceur.');
+        const response = await fetch(`${workerUrl}${path}`, {
+          ...options,
+          headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+            ...(options.headers || {})
+          }
+        });
+        if (response.status === 204) return {};
+        const result = await response.json().catch(() => ({}));
+        if (!response.ok) throw new Error(result.error || 'Erreur lors de la gestion des notifications.');
+        return result;
+      }
+
+      async function loadNotificationPreferences() {
+        globalPreference.disabled = true;
+        conversationPreference.disabled = true;
+        preferencesStatus.textContent = 'Chargement des préférences…';
+        try {
+          const preferences = await pushApi('/api/push/prefs');
+          globalPreference.checked = Boolean(preferences.global);
+          conversationPreference.checked = Boolean(preferences.conv);
+          globalPreference.disabled = false;
+          conversationPreference.disabled = false;
+          preferencesStatus.textContent = '';
+        } catch (error) {
+          preferencesStatus.textContent = error.message;
+        }
+      }
+
+      async function saveNotificationPreference(key, input) {
+        const value = input.checked;
+        input.disabled = true;
+        preferencesStatus.textContent = 'Enregistrement…';
+        try {
+          await pushApi('/api/push/prefs', {
+            method: 'PATCH',
+            body: JSON.stringify({ [key]: value ? 1 : 0 })
+          });
+          preferencesStatus.textContent = 'Préférences enregistrées.';
+        } catch (error) {
+          input.checked = !value;
+          preferencesStatus.textContent = error.message;
+        } finally {
+          input.disabled = false;
+        }
+      }
+
+      async function refreshManagedNotificationStatus() {
+        let active = false;
+        try {
+          const registration = await navigator.serviceWorker.getRegistration(new URL('sw.js', location.href));
+          const subscription = registration && await registration.pushManager.getSubscription();
+          active = Boolean(subscription && usesCurrentVapidKey(subscription));
+        } catch (error) {
+          managedNotificationStatus.textContent = 'Impossible de vérifier l’état des notifications.';
+        }
+        manageNotificationsButton.textContent = active ? 'Désactiver les notifications' : 'Activer les notifications';
+        if (active) managedNotificationStatus.textContent = 'Notifications activées sur cet appareil.';
+        else if (!('Notification' in window) || !('PushManager' in window)) managedNotificationStatus.textContent = 'Les notifications ne sont pas prises en charge par ce navigateur.';
+        else if (Notification.permission === 'denied') managedNotificationStatus.textContent = 'Notifications bloquées dans les paramètres du navigateur.';
+        else managedNotificationStatus.textContent = 'Notifications désactivées sur cet appareil.';
+        return active;
+      }
+
+      async function toggleManagedNotifications() {
+        manageNotificationsButton.disabled = true;
+        try {
+          const active = await refreshManagedNotificationStatus();
+          if (active) {
+            const registration = await navigator.serviceWorker.getRegistration(new URL('sw.js', location.href));
+            const subscription = registration && await registration.pushManager.getSubscription();
+            if (subscription) {
+              await pushApi('/api/push/unsubscribe', {
+                method: 'POST',
+                body: JSON.stringify({ endpoint: subscription.endpoint })
+              });
+              await subscription.unsubscribe();
+            }
+            managedNotificationStatus.textContent = 'Notifications désactivées sur cet appareil.';
+          } else {
+            await enableNotifications();
+            managedNotificationStatus.textContent = 'Notifications activées sur cet appareil.';
+          }
+          await refreshManagedNotificationStatus();
+        } catch (error) {
+          managedNotificationStatus.textContent = error.message;
+        } finally {
+          manageNotificationsButton.disabled = false;
+        }
+      }
+
+      globalPreference.addEventListener('change', () => saveNotificationPreference('global', globalPreference));
+      conversationPreference.addEventListener('change', () => saveNotificationPreference('conv', conversationPreference));
+      manageNotificationsButton.addEventListener('click', toggleManagedNotifications);
+      testNotificationButton.addEventListener('click', async () => {
+        testNotificationButton.disabled = true;
+        testNotificationStatus.textContent = 'Envoi de la notification de test…';
+        try {
+          if (!('Notification' in window) || Notification.permission !== 'granted') {
+            throw new Error('Autorise les notifications du navigateur avant le test.');
+          }
+          const registration = await navigator.serviceWorker.getRegistration(new URL('sw.js', location.href));
+          if (!registration) throw new Error('Le service worker de notifications n’est pas installé.');
+          await registration.showNotification('Notification de test', {
+            body: 'Les notifications de Chrome sont affichées sur cet appareil.',
+            tag: 'about-blank-notification-test',
+            renotify: true
+          });
+          testNotificationStatus.textContent = 'Notification locale envoyée. Ce test ne vérifie pas l’envoi des push par le serveur.';
+        } catch (error) {
+          console.error(error);
+          testNotificationStatus.textContent = error.message;
+        } finally {
+          testNotificationButton.disabled = false;
+        }
+      });
+
+      async function registerSubscription(subscription) {
+        const token = localStorage.getItem('cf_jwt');
+        if (!token) throw new Error('Session absente. Connectez-vous dans le formulaire de cette page, puis réessayez.');
+
+        const serialized = subscription.toJSON();
+        await pushApi('/api/push/subscribe', {
+          method: 'POST',
+          body: JSON.stringify({ endpoint: serialized.endpoint, keys: serialized.keys })
+        });
+      }
+
+      async function enableNotifications() {
+        if (!window.isSecureContext || !('serviceWorker' in navigator) || !('PushManager' in window) || !('Notification' in window)) {
+          throw new Error('Les notifications push ne sont pas disponibles dans ce navigateur ou sur cette adresse.');
+        }
+        if (Notification.permission === 'denied') {
+          throw new Error('Les notifications sont bloquées pour ce site. Autorisez-les dans les paramètres du navigateur, puis réessayez.');
+        }
+        if (Notification.permission === 'default' && await Notification.requestPermission() !== 'granted') {
+          throw new Error('Autorisation des notifications refusée.');
+        }
+
+        const swUrl = new URL('sw.js', location.href);
+        const registration = await navigator.serviceWorker.register(swUrl);
+        await navigator.serviceWorker.ready;
+
+        let subscription = await registration.pushManager.getSubscription();
+        let createdHere = false;
+        if (subscription && !usesCurrentVapidKey(subscription)) {
+          await subscription.unsubscribe();
+          subscription = null;
+        }
+        if (!subscription) {
+          subscription = await registration.pushManager.subscribe({
+            userVisibleOnly: true,
+            applicationServerKey: decodeVapidKey(vapidPublicKey)
+          });
+          createdHere = true;
+        }
+
+        try {
+          await registerSubscription(subscription);
+        } catch (error) {
+          if (createdHere) await subscription.unsubscribe().catch(() => {});
+          throw error;
+        }
+      }
+
+      button.addEventListener('click', async () => {
+        button.disabled = true;
+        status.textContent = 'Activation en cours…';
+        try {
+          await enableNotifications();
+          notificationStepDone = true;
+          updateNextButton();
+          status.textContent = 'Notifications activées pour cette page et associées à votre compte.';
+          showCompletedView();
+        } catch (error) {
+          status.textContent = error.message;
+        } finally {
+          button.disabled = false;
+        }
+      });
+
+      refreshLoginState();
+      if (localStorage.getItem('launch_setup_completed_v2') === 'true') {
+        showCompletedView(true);
+      } else {
+        showStep(0);
+      }
+      refreshNotificationStep();
+      if (bookmarkStepDone) {
+        bookmarkButton.textContent = 'Favori confirmé';
+        bookmarkButton.disabled = true;
+      }
+    })();
+  </script>
+</body>
+</html>
